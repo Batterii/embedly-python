@@ -10,8 +10,11 @@ request() returns a dictionary of response headers and the body of the response
 
 Here are 2 HTTP clients, feel free to use your own
 """
+import logging
 import urllib2
 import httplib2
+
+logger = logging.getLogger(__name__)
 
 class Httplib2Client(object):
     def __init__(self, timeout=30):
@@ -22,6 +25,8 @@ class Httplib2Client(object):
         Makes HTTP requests using httplib2
         """
         http = httplib2.Http(timeout=self.timeout)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Calling url '%s' with headers %s" % (url, headers))
         resp, content = http.request(url, headers=headers)
 
         return resp, content
@@ -37,6 +42,8 @@ class Urllib2Client(object):
         """
         try:
             request = urllib2.Request(url, headers=(headers or {}))
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("Calling url '%s' with headers %s" % (url, headers))
             response = urllib2.urlopen(request, timeout=self.timeout)
             resp = response.headers.dict
             if "status" not in resp:
