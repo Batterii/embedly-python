@@ -18,7 +18,7 @@ else:
 
 setup(
     name = 'Embedly',
-    version = 'batterii-0.2',
+    version = 'batterii-0.3',
     author = 'Embed.ly, Inc.',
     author_email = 'support@embed.ly',
     description = 'Python Library for Embedly',

@@ -88,6 +88,15 @@ class Embedly(object):
 
         return self._regex
 
+    def _quote(self, value):
+        """
+        Calls urllib for quoting.  There is another replace for slashes because
+        if you're running in App Engine they use an old version of urllib that
+        had a bug about not escaping slashes.
+        """
+        value = urllib.quote(value)
+        return value.replace("/", "%2F")
+
     def _get(self, version, method, url_or_urls, **kwargs):
         """
         _get makes the actual call to api.embed.ly
@@ -117,9 +126,9 @@ class Embedly(object):
         query += urllib.urlencode(kwargs)
 
         if multi:
-            query += '&urls=%s&' % ','.join([urllib.quote(url) for url in url_or_urls])
+            query += '&urls=%s&' % ','.join([self._quote(url) for url in url_or_urls])
         else:
-            query += '&url=%s' % urllib.quote(url_or_urls)
+            query += '&url=%s' % self._quote(url_or_urls)
 
         url = 'http://api.embed.ly/%s/%s?%s' % (version, method, query)
 
